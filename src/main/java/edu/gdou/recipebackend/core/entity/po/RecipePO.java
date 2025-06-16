@@ -35,8 +35,8 @@ public class RecipePO {
     private String uploadTime;
     @TableField("ReviewState")
     private int reviewState;
-    @TableField("RecipeTypeID")
-    private int recipeTypeID;
-    @TableField("RecipeTypeName")
-    private String recipeTypeName;
+    @TableField("RecipeTypeIds")
+    private String recipeTypeIds;
+    @TableField("RecipeTypeNames")
+    private String recipeTypeNames;
 }

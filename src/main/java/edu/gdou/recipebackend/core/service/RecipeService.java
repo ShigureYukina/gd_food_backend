@@ -1,11 +1,13 @@
 package edu.gdou.recipebackend.core.service;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import edu.gdou.recipebackend.core.entity.po.RecipePO;
 import edu.gdou.recipebackend.core.entity.po.ReviewPO;
 import edu.gdou.recipebackend.core.entity.po.StoryPO;
 import edu.gdou.recipebackend.core.entity.vo.RecipeDetailVO;
+import edu.gdou.recipebackend.core.entity.vo.RecipeVO;
 import edu.gdou.recipebackend.core.mapper.RecipeMapper;
 import edu.gdou.recipebackend.core.mapper.ReviewMapper;
 import edu.gdou.recipebackend.core.mapper.StoryMapper;
@@ -31,6 +33,8 @@ public class RecipeService extends ServiceImpl<RecipeMapper, RecipePO> {
             log.error("当前菜谱为空");
             throw new RuntimeException("当前菜谱不存在");
         }
+        //将json字符串转为string
+        recipe.setIngredients(JSON.toJSONString(recipe.getIngredients()));
         log.info("recipe:{}",recipe);
         //查询story,通过菜谱id查询
         StoryPO story = storyMapper.selectOne(new LambdaQueryWrapper<StoryPO>().eq(StoryPO::getRecipeId, id));
@@ -61,5 +65,31 @@ public class RecipeService extends ServiceImpl<RecipeMapper, RecipePO> {
             log.error("更新审核状态失败");
             throw new RuntimeException("审核出现错误");
         }
+    }
+
+    public List<RecipeVO> search(String keywords, int page, int pagesize, String type) {
+        List<RecipeVO> recipeVOList = recipeMapper.search(keywords, page, pagesize, type);
+        //将json格式的Ingredients转为字符串
+        for (RecipeVO recipeVO : recipeVOList) {
+            String ingredients = recipeVO.getIngredients();
+            recipeVO.setIngredients(JSON.toJSONString(ingredients));
+        }
+        return recipeVOList;
+    }
+
+    public int InsertOrUpdate(RecipePO recipePO) {
+        int recipeID = recipePO.getRecipeID();
+        RecipePO recipePO1 = recipeMapper.selectById(recipeID);
+        //将字符串的Ingredients转为json格式
+        recipePO.setIngredients((String) JSON.toJSON(recipePO.getIngredients()));
+        if (recipePO1==null){
+            //当前id没有找到菜谱，说明为第一次，插入操作
+            recipeMapper.insert(recipePO);
+        }
+        else {
+            //更新操作
+            recipeMapper.updateById(recipePO);
+        }
+        return recipePO.getRecipeID();
     }
 }

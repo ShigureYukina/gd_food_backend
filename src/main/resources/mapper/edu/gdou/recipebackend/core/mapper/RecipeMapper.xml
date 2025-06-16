@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.gdou.recipebackend.core.mapper.RecipeMapper" xmlns="http://mybatis.org/schema/mybatis-mapper" >
+    <select id="search" resultType="BaseResultMap">
+        select r.RecipeID,r.UserID,r.Title,r.Ingredients,r.RecipeTypeNames,rt.Rating
+        from recipe r left join review rt on r.RecipeID = rt.RecipeID
+        <where>
+            1=1
+            <if test="keyword!=null and keyword !=''">
+            AND (rt.title like concat('%',#{keyword},'%')
+                or r.Ingredients like concat('%',#{keyword},'%'))
+            </if>
+            <if test="type !=null and type !=''">
+                AND concat(',',r.RecipeTypeNames,',') like concat('%',#{type},'%')
+            </if>
+            group by r.RecipeID
+            order by r.RecipeID desc
+        </where>
+    </select>
+    <resultMap id="BaseResultMap" type="edu.gdou.recipebackend.core.entity.vo.RecipeVO">
+<!--r.RecipeID,r.UserID,r.Title,r.Ingredients,r.RecipeTypeNames,rt.Rating-->
+        <id column="RecipeID" property="recipeID" />
+        <result column="UserID" property="userID" />
+        <result column="Title" property="title" />
+        <result column="Ingredients" property="ingredients" />
+        <result column="RecipeTypeNames" property="recipeTypeNames" />
+        <result column="rating" property="rating" />
+    </resultMap>
+</mapper>

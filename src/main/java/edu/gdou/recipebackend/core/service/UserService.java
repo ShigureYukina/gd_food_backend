@@ -4,19 +4,22 @@ package edu.gdou.recipebackend.core.service;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import edu.gdou.recipebackend.core.entity.dto.EditUserDTO;
 import edu.gdou.recipebackend.core.entity.dto.LoginDTO;
 import edu.gdou.recipebackend.core.entity.dto.RegDTO;
 import edu.gdou.recipebackend.core.entity.po.UserPO;
 import edu.gdou.recipebackend.core.entity.vo.RegAndLoginVO;
 import edu.gdou.recipebackend.core.mapper.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
 public class UserService extends ServiceImpl<UserMapper,UserPO> {
-
+    @Autowired
+    private UserMapper userMapper;
 
     public RegAndLoginVO register(RegDTO dto) {
         String username = dto.getUsername();
@@ -75,4 +78,25 @@ public class UserService extends ServiceImpl<UserMapper,UserPO> {
         }
     }
 
+    public UserPO getUserInfo(Long userId) {
+        return userMapper.selectById(userId);
+    }
+
+    public UserPO updateUserInfo(EditUserDTO editUserDTO) {
+        int userId = StpUtil.getLoginIdAsInt();
+        UserPO userPO = userMapper.selectById(userId);
+        String username = editUserDTO.getUsername();
+        String email = editUserDTO.getEmail();
+        Integer userRole = editUserDTO.getUserRole();
+        if (username!=null&& !username.isEmpty()){
+            userPO.setUsername(username);
+        }
+        if (email!=null&& !email.isEmpty()){
+            userPO.setEmail(email);
+        }
+        if (userRole!=null){
+            userPO.setUserRole(userRole);
+        }
+        return userPO;
+    }
 }

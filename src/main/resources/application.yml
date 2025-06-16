@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/recipe_db?useUnicode=yes&characterEncoding=UTF8
     username: root
-    password: 123456
+    password: 1234
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
       max-lifetime: 1765000
@@ -37,4 +37,10 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开发环境显示SQL日志
 

@@ -12,30 +12,26 @@ CREATE TABLE Users (
                        UserRole TINYINT NOT NULL DEFAULT 0 COMMENT '0: 普通用户, 1: 管理员'
 );
 
-
-
 CREATE TABLE RecipeType (
                             recipeTypeId BIGINT AUTO_INCREMENT PRIMARY KEY,
                             recipeTypeName VARCHAR(255) NOT NULL
 );
 
-
-
-CREATE TABLE Recipe (
-                        RecipeID INT AUTO_INCREMENT PRIMARY KEY, -- 菜谱唯一标识
-                        UserID INT NOT NULL, -- 上传者的用户ID（关联User表）
-                        Title VARCHAR(100) NOT NULL, -- 菜谱标题
-                        Ingredients TEXT NOT NULL, -- 食材清单（JSON格式）
-                        Difficulty ENUM('简单', '中等', '困难') NOT NULL DEFAULT '中等', -- 菜谱难度等级，默认为'中等'
-                        Steps TEXT NOT NULL, -- 烹饪步骤描述
-                        VideoLink VARCHAR(255), -- 视频链接（可选）
-                        ImageLinks TEXT, -- 图文链接（JSON格式存储多个）
-                        UploadTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 菜谱上传时间，默认为当前时间
-                        ReviewState TINYINT NOT NULL DEFAULT 0, -- 审核状态：0未审核，1审核通过，默认为0
-                        RecipeTypeID INT, -- 菜谱类型ID
-                        RecipeTypeName VARCHAR(10) -- 菜谱类型名称，冗余字段记录类别
+create table if not exists recipe_db.recipe
+(
+    RecipeID      int auto_increment
+        primary key,
+    UserID        int                                                     not null,
+    Title         varchar(100)                                            not null comment '菜谱标题',
+    Ingredients   text                                                    not null comment '食材清单',
+    Difficulty    enum ('简单', '中等', '困难') default '中等'            not null,
+    Steps         text                                                    not null comment '烹饪步骤',
+    VideoLink     varchar(255)                                            null,
+    ImageLinks    text                                                    null,
+    UploadTime    datetime                      default CURRENT_TIMESTAMP not null,
+    ReviewState   tinyint                       default 0                 not null comment '审核状态，0代表未审核，1代表审核通过，默认为0',
+    RecipeTypeIds varchar(20)                                             null comment '类别id，若有多个类别，用,隔开'
 );
-
 
 
 
@@ -69,5 +65,6 @@ CREATE TABLE CookBook (
     -- 联合主键
                           PRIMARY KEY (UserID, RecipeID)
 ) COMMENT = '个人菜谱收藏表';
+
 
 

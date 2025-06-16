@@ -1,10 +1,9 @@
 package edu.gdou.recipebackend.core.entity.po;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.Data;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 用户实体类
@@ -48,4 +47,7 @@ public class UserPO {
      */
     @TableField("LastLoginTime")
     private Date lastLoginTime;
+
+    @TableField("UserRole")
+    private int UserRole;
 }

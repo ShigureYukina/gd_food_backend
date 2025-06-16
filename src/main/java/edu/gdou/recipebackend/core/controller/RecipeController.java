@@ -4,11 +4,14 @@ import cn.dev33.satoken.stp.StpUtil;
 import edu.gdou.recipebackend.core.entity.base.Result;
 import edu.gdou.recipebackend.core.entity.dto.FavoriteDTO;
 import edu.gdou.recipebackend.core.entity.po.RecipePO;
+import edu.gdou.recipebackend.core.entity.po.RecipeTypePO;
 import edu.gdou.recipebackend.core.entity.vo.CookBookVO;
 import edu.gdou.recipebackend.core.entity.vo.RecipeDetailVO;
+import edu.gdou.recipebackend.core.entity.vo.RecipeVO;
+import edu.gdou.recipebackend.core.mapper.RecipeTypeMapper;
 import edu.gdou.recipebackend.core.service.CookBookService;
 import edu.gdou.recipebackend.core.service.RecipeService;
-import edu.gdou.recipebackend.core.service.ReviewService;
+import edu.gdou.recipebackend.core.service.RecipeTypeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +27,18 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
     @Autowired
-    ReviewService reviewService;
+    private RecipeTypeService recipeTypeService;
+    @Autowired
+    private RecipeTypeMapper recipeTypeMapper;
+    /*
+     * 创建/更新菜谱
+     * */
+    @PostMapping("/recipe")
+    public Result<Integer> CreateOrUpdateRecipe(@RequestParam RecipePO recipePO){
+        int recipeId = recipeService.InsertOrUpdate(recipePO);
+        return Result.ok(recipeId);
+    }
+
     /*
     * 获取菜谱详情
     * */
@@ -33,6 +47,34 @@ public class RecipeController {
         RecipeDetailVO recipeDetailVO = recipeService.getRecipeDetail(id);
         return Result.ok(recipeDetailVO);
     }
+    /*
+     * 获取所有菜谱类别
+     * */
+    @GetMapping("/recipes_type")
+    public Result<List<RecipeTypePO>> getRecipeType(){
+        List<RecipeTypePO> recipeTypePOS = recipeTypeMapper.selectList(null);
+        return Result.ok(recipeTypePOS);
+    }
+    /*
+     * 获取某个菜谱的类别
+     * */
+    @GetMapping("/recipes_type/{recipeId}")
+    public Result<List<RecipeTypePO>> getRecipeTypeByRecipeId(@PathVariable Long recipeId){
+        List<RecipeTypePO> recipeTypePOS = recipeTypeService.getRecipeTypeByRecipeId(recipeId);
+        return Result.ok(recipeTypePOS);
+    }
+    /*
+     * 搜索
+     * */
+    @GetMapping("/recipes")
+    public Result<List<RecipeVO>> SearchRecipes(@RequestParam(required = false)String keywords,
+                                                @RequestParam(defaultValue = "1")int page,
+                                                @RequestParam(defaultValue = "10")int pagesize,
+                                                @RequestParam(required = false)String type){
+        List<RecipeVO> recipes = recipeService.search(keywords,page,pagesize,type);
+        return Result.ok(recipes);
+    }
+
     /*
      * 审核菜谱
      * */
