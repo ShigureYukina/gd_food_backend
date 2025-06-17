@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("comment")
+@TableName("review")
 public class ReviewPO {
     @TableId(value = "ReviewID",type = IdType.AUTO)
     private int reviewId;

@@ -13,7 +13,7 @@ public class CookBookPO {
     private int UserId;
     @TableField("RecipeID")
     private int RecipeId;
-    @TableField("CollectinoTime")
+    @TableField("CollectionTime")
     private Date CollectionTime;
     @TableField("Notes")
     private String Notes;

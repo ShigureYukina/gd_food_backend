@@ -9,10 +9,7 @@ import edu.gdou.recipebackend.core.entity.po.UserPO;
 import edu.gdou.recipebackend.core.entity.vo.RegAndLoginVO;
 import edu.gdou.recipebackend.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController()
 public class UserController {
@@ -42,8 +39,8 @@ public class UserController {
     /*
      * 更新用户信息
      * */
-    @GetMapping("/api/userinfo")
-    public Result<UserPO> UpdateUseInfo(@RequestParam EditUserDTO editUserDTO){
+    @PutMapping("/api/userinfo")
+    public Result<UserPO> UpdateUseInfo(@RequestBody EditUserDTO editUserDTO){
         UserPO userPO = userService.updateUserInfo(editUserDTO);
         return Result.ok(userPO);
     }

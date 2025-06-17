@@ -30,7 +30,8 @@ create table if not exists recipe_db.recipe
     ImageLinks    text                                                    null,
     UploadTime    datetime                      default CURRENT_TIMESTAMP not null,
     ReviewState   tinyint                       default 0                 not null comment '审核状态，0代表未审核，1代表审核通过，默认为0',
-    RecipeTypeIds varchar(20)                                             null comment '类别id，若有多个类别，用,隔开'
+    RecipeTypeIds varchar(20)                                            null comment '类别id，若有多个类别，用,隔开',
+    RecipeTypeNames VARCHAR(255) NOT NULL
 );
 
 

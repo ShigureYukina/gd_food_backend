@@ -3,6 +3,7 @@ package edu.gdou.recipebackend.core.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import edu.gdou.recipebackend.core.entity.base.Result;
 import edu.gdou.recipebackend.core.entity.dto.FavoriteDTO;
+import edu.gdou.recipebackend.core.entity.dto.ReviewRecipeDto;
 import edu.gdou.recipebackend.core.entity.po.RecipePO;
 import edu.gdou.recipebackend.core.entity.po.RecipeTypePO;
 import edu.gdou.recipebackend.core.entity.vo.CookBookVO;
@@ -34,7 +35,7 @@ public class RecipeController {
      * 创建/更新菜谱
      * */
     @PostMapping("/recipe")
-    public Result<Integer> CreateOrUpdateRecipe(@RequestParam RecipePO recipePO){
+    public Result<Integer> CreateOrUpdateRecipe(@RequestBody RecipePO recipePO){
         int recipeId = recipeService.InsertOrUpdate(recipePO);
         return Result.ok(recipeId);
     }
@@ -42,11 +43,12 @@ public class RecipeController {
     /*
     * 获取菜谱详情
     * */
-    @GetMapping("/recipe_deatil/{id}")
+    @GetMapping("/recipe_detail/{id}")
     public Result<RecipeDetailVO> getRecipeDeatil(@PathVariable Long id){
         RecipeDetailVO recipeDetailVO = recipeService.getRecipeDetail(id);
         return Result.ok(recipeDetailVO);
     }
+
     /*
      * 获取所有菜谱类别
      * */
@@ -55,14 +57,7 @@ public class RecipeController {
         List<RecipeTypePO> recipeTypePOS = recipeTypeMapper.selectList(null);
         return Result.ok(recipeTypePOS);
     }
-    /*
-     * 获取某个菜谱的类别
-     * */
-    @GetMapping("/recipes_type/{recipeId}")
-    public Result<List<RecipeTypePO>> getRecipeTypeByRecipeId(@PathVariable Long recipeId){
-        List<RecipeTypePO> recipeTypePOS = recipeTypeService.getRecipeTypeByRecipeId(recipeId);
-        return Result.ok(recipeTypePOS);
-    }
+
     /*
      * 搜索
      * */
@@ -79,8 +74,8 @@ public class RecipeController {
      * 审核菜谱
      * */
     @PostMapping("/review_recipe")
-    public Result reviewRecipe(Long recipeId,Boolean reviewState){
-        recipeService.review(recipeId,reviewState);
+    public Result reviewRecipe(@RequestBody ReviewRecipeDto dto){
+        recipeService.review(dto.getRecipeId(), dto.getReviewState());
         return Result.ok();
     }
     /*

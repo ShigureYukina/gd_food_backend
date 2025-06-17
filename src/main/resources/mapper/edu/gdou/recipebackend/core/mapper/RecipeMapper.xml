@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="edu.gdou.recipebackend.core.mapper.RecipeMapper" xmlns="http://mybatis.org/schema/mybatis-mapper" >
-    <select id="search" resultType="BaseResultMap">
-        select r.RecipeID,r.UserID,r.Title,r.Ingredients,r.RecipeTypeNames,rt.Rating
-        from recipe r left join review rt on r.RecipeID = rt.RecipeID
+<mapper namespace="edu.gdou.recipebackend.core.mapper.RecipeMapper"  >
+    <select id="search" resultMap="BaseResultMap">
+        SELECT
+        r.RecipeID,
+        r.UserID,
+        r.Title,
+        r.Ingredients,
+        r.RecipeTypeNames,
+        AVG(rt.Rating) AS Rating  <!-- 聚合函数处理多个评分 -->
+        FROM recipe r
+        LEFT JOIN review rt ON r.RecipeID = rt.RecipeID
         <where>
             1=1
-            <if test="keyword!=null and keyword !=''">
-            AND (rt.title like concat('%',#{keyword},'%')
-                or r.Ingredients like concat('%',#{keyword},'%'))
+            <if test="keywords != null and keywords != ''">
+                AND (r.Title LIKE CONCAT('%', #{keywords}, '%')
+                OR r.Ingredients LIKE CONCAT('%', #{keywords}, '%'))
             </if>
-            <if test="type !=null and type !=''">
-                AND concat(',',r.RecipeTypeNames,',') like concat('%',#{type},'%')
+            <if test="type != null and type != ''">
+                AND CONCAT(',', r.RecipeTypeNames, ',') LIKE CONCAT('%,', #{type}, ',%')
             </if>
-            group by r.RecipeID
-            order by r.RecipeID desc
         </where>
+        GROUP BY r.RecipeID
+        ORDER BY r.RecipeID DESC
     </select>
     <resultMap id="BaseResultMap" type="edu.gdou.recipebackend.core.entity.vo.RecipeVO">
 <!--r.RecipeID,r.UserID,r.Title,r.Ingredients,r.RecipeTypeNames,rt.Rating-->
