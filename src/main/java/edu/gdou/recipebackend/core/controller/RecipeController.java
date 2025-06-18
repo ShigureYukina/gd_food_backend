@@ -64,9 +64,9 @@ public class RecipeController {
     @GetMapping("/recipes")
     public Result<List<RecipeVO>> SearchRecipes(@RequestParam(required = false)String keywords,
                                                 @RequestParam(defaultValue = "1")int page,
-                                                @RequestParam(defaultValue = "10")int pagesize,
+                                                @RequestParam(defaultValue = "10")int size,
                                                 @RequestParam(required = false)String type){
-        List<RecipeVO> recipes = recipeService.search(keywords,page,pagesize,type);
+        List<RecipeVO> recipes = recipeService.search(keywords,page,size,type);
         return Result.ok(recipes);
     }
 

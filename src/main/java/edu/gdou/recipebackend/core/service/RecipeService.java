@@ -3,6 +3,7 @@ package edu.gdou.recipebackend.core.service;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import edu.gdou.recipebackend.core.entity.po.RecipePO;
 import edu.gdou.recipebackend.core.entity.po.RecipeTypePO;
@@ -74,8 +75,7 @@ public class RecipeService extends ServiceImpl<RecipeMapper, RecipePO> {
     }
 
     public List<RecipeVO> search(String keywords, int page, int pagesize, String type) {
-        List<RecipeVO> recipeVOList = recipeMapper.search(keywords, page, pagesize, type);
-        return recipeVOList;
+        return recipeMapper.search( keywords,type,pagesize,page-1 );
     }
 
     public int InsertOrUpdate(RecipePO recipePO) {
