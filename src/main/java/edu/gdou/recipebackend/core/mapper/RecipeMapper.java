@@ -12,5 +12,10 @@ import java.util.List;
 
 @Mapper
 public interface RecipeMapper extends BaseMapper<RecipePO> {
-    List<RecipeVO> search(@Param("keywords") String keywords, @Param("type") String type,@Param("pageSize") int pageSize, @Param("offset") int offset);
+    List<RecipeVO> search(@Param("keywords") String keywords,
+                          @Param("type") String type,
+                          @Param("pageSize") int pageSize,
+                          @Param("offset") int offset,
+                          @Param("selectPass") boolean selectPass
+    );
 }

@@ -1,14 +1,12 @@
 package edu.gdou.recipebackend.core.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import edu.gdou.recipebackend.core.entity.po.RecipePO;
-import edu.gdou.recipebackend.core.entity.po.RecipeTypePO;
-import edu.gdou.recipebackend.core.entity.po.ReviewPO;
-import edu.gdou.recipebackend.core.entity.po.StoryPO;
+import edu.gdou.recipebackend.core.entity.po.*;
 import edu.gdou.recipebackend.core.entity.vo.RecipeDetailVO;
 import edu.gdou.recipebackend.core.entity.vo.RecipeVO;
 import edu.gdou.recipebackend.core.mapper.RecipeMapper;
@@ -32,6 +30,9 @@ public class RecipeService extends ServiceImpl<RecipeMapper, RecipePO> {
     ReviewMapper reviewMapper;
     @Autowired
     RecipeTypeMapper typeMapper;
+
+    @Autowired
+    UserService userService;
 
     public RecipeDetailVO getRecipeDetail(Long id) {
         //查询recipe
@@ -75,7 +76,11 @@ public class RecipeService extends ServiceImpl<RecipeMapper, RecipePO> {
     }
 
     public List<RecipeVO> search(String keywords, int page, int pagesize, String type) {
-        return recipeMapper.search( keywords,type,pagesize,page-1 );
+        //根据用户分流
+        UserPO userPO = userService.getUserInfo(StpUtil.getLoginIdAsLong());
+        boolean selectPass;
+        selectPass = userPO.getUserRole() != 1;//管理员则可以看到未审核过的内容
+        return recipeMapper.search( keywords,type,pagesize,page-1,selectPass);
     }
 
     public int InsertOrUpdate(RecipePO recipePO) {

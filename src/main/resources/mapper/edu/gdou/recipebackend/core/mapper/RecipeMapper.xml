@@ -19,6 +19,9 @@
             <if test="type != null and type != ''">
                 AND CONCAT(',', r.RecipeTypeNames, ',') LIKE CONCAT('%,', ${type}, ',%')
             </if>
+            <if test="selectPass">
+                AND r.ReviewState = 1
+            </if>
         </where>
         GROUP BY r.RecipeID
         ORDER BY r.RecipeID DESC LIMIT ${pageSize} OFFSET ${offset}
