@@ -8,6 +8,8 @@
         r.UserID,
         r.Title,
         r.Ingredients,
+        r.ReviewState,
+        r.RecipeTypeIds,
         r.RecipeTypeNames,
         AVG(rt.Rating) AS Rating
         FROM recipe r
